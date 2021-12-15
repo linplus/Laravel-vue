@@ -31,6 +31,12 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Compile assets
+        run: npm run dev
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
