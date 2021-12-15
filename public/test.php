@@ -4,7 +4,9 @@
     <title>Test Page</title>
 <body>
 <div>
-    <h1>Hello HTML World</h1>
+    <h1>
+        <?php echo 'Hello PHP World'; ?>
+    </h1>
 </div>
 </body>
 </html>
