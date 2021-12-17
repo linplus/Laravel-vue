@@ -45,8 +45,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: pimsv2.zip
-          exclusions: '*.git* .editorconfig'
-#          exclusions: '*.git* /*node_modules/* .editorconfig'
+          exclusions: '*.git* /*node_modules/* .editorconfig'
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
