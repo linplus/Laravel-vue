@@ -23,8 +23,7 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - run: |
-
+#      - run: |
 #          curl -X PUT -u '$plin-deploy:jA5KJK21FbaKdMJs8SbauNSwh2Rv1ufy9buZpbNwMxm3ez7LHGMfSlCxErja' https://plin-deploy.scm.azurewebsites.net/api/zipdeploy -H "Content-Type: application/json" -d "{'packageUri':'https://github.com/plin-qiagen/Laravel-vue/releases/download/v8/pimsv2-v8.zip'}"
 #          az extension add --name webapp
 
