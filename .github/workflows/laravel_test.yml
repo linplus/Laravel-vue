@@ -4,13 +4,8 @@ name: Template - Laravel application (Mysql)
 on:
   push:
     branches:
-      - main
-      - develop
-      - features/**
-  pull_request:
-    branches:
-      - main
-      - develop
+      - master
+  workflow_dispatch:
 
 jobs:
   laravel-tests:
