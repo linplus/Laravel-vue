@@ -17,7 +17,7 @@ jobs:
         # Docker Hub image (also with version)
         image: mysql:8.0
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE:  pims
         ## map the "external" 33306 port with the "internal" 3306
         ports:
@@ -104,6 +104,7 @@ jobs:
           DB_DATABASE: pims
           DB_PORT: 33306
           DB_USER: root
+          DB_PASSWORD: secret
 
         run: php artisan migrate
 
