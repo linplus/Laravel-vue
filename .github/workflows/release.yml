@@ -1,4 +1,4 @@
-name: Build and Create Releases Manually
+name: Build and Create Releases
 on:
   workflow_dispatch:
     inputs:
