@@ -36,8 +36,8 @@ jobs:
         # Docker Hub image (also with version) - plin: align with dev and deployment
         image: mysql:${{ matrix.mysql-version }}
         env:
-          MYSQL_ROOT_PASSWORD: ${{env.MYSQL_PASSWORD}}
-          MYSQL_DATABASE: ${{env.MYSQL_DATABASE}}
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: pims
         ## map the "external" 33060 port with the "internal" 3306
         ports:
           - 33060:3306
