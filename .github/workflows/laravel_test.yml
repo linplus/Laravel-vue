@@ -17,7 +17,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_DATABASE:  pims
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: secret
         ## map the "external" 33060 port with the "internal" 3306
         ports:
           - 33060:3306
@@ -106,7 +106,7 @@ jobs:
           DB_DATABASE: pims
           DB_PORT: 33060
           DB_USER: root
-          DB_PASSWORD:
+          DB_PASSWORD: secret
 
         run: php artisan migrate
 
@@ -124,7 +124,7 @@ jobs:
           DB_DATABASE: pims
           DB_PORT: 33060
           DB_USER: root
-          DB_PASSWORD:
+          DB_PASSWORD: secret
 
         run: vendor/bin/phpunit --testdox
 
