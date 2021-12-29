@@ -35,7 +35,7 @@ jobs:
         image: mysql:${{ matrix.mysql-version }}
         env:
           MYSQL_ROOT_PASSWORD: ${{env.DB_PASSWORD}}
-          MYSQL_DATABASE: pims
+          MYSQL_DATABASE: ${{env.DB_DATABASE}}
         ## map the "external" 33060 port with the "internal" 3306
         ports:
           - 33060:3306
