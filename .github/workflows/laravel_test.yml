@@ -15,13 +15,16 @@ jobs:
       # Label used to access the service container
       mysql:
         # Docker Hub image (also with version)
+        # plin: mysql version should align with dev and deployment env (current 8.0)
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE:  pims
-        ## map the "external" 33306 port with the "internal" 3306
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_USER: homestead
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE:  pims_test
+        ## map the "external" 33060 port with the "internal" 3306
         ports:
-          - 33306:3306
+          - 33060:3306
         # Set health checks to wait until mysql database has started (it takes some seconds to start)
         options: >-
           --health-cmd="mysqladmin ping"
@@ -39,14 +42,14 @@ jobs:
           - laravel:  8.*
             testbench: 6.*
 
-    name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
+    name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.operating-system}}
 
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '15.x'
+          node-version: '14.x'
       - name: Cache node_modules directory
         uses: actions/cache@v2
         id: node_modules-cache
@@ -102,14 +105,15 @@ jobs:
         env:
           DB_CONNECTION: mysql
           DB_DATABASE: pims
-          DB_PORT: 33306
-          DB_USER: root
+          DB_PORT: 33060
+          DB_USER: homestead
           DB_PASSWORD: secret
 
         run: php artisan migrate
 
       - name: Show dir
         run: pwd
+
       - name: PHP Version
         run: php --version
 
@@ -119,12 +123,11 @@ jobs:
         env:
           DB_CONNECTION: mysql
           DB_DATABASE: pims
-          DB_PORT: 33306
-          DB_USER: root
+          DB_PORT: 33060
+          DB_USER: homestead
           DB_PASSWORD: secret
 
         run: vendor/bin/phpunit --testdox
-
 
 
 #      - name: Execute Code Sniffer via phpcs
@@ -132,7 +135,7 @@ jobs:
 #          composer require --dev squizlabs/php_codesniffer
 #          vendor/bin/phpcs --standard=PSR12 app
 
-      - name: Execute Code Static Analysis (PHP Stan + Larastan)
-        run: |
-          composer require --dev nunomaduro/larastan
-          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
+#      - name: Execute Code Static Analysis (PHP Stan + Larastan)
+#        run: |
+#          composer require --dev nunomaduro/larastan
+#          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
