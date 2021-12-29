@@ -2,7 +2,7 @@ name: (PR pre-check) Build and Test
 on:
   pull_request:
     branches:
-      - main
+      - master
 env:
 
   # db
