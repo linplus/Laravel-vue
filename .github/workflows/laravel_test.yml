@@ -8,7 +8,17 @@ on:
 
 jobs:
   laravel-tests:
-    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php-versions: [ '8.0' ]
+        dependency-stability: [ 'prefer-stable' ]
+        laravel: [ '8.*' ]
+        testbench: [' 6.*']
+
+    runs-on: ${{ matrix.php-operating }}
+
     # Service container Mysql mysql
     services:
       # Label used to access the service container
@@ -16,7 +26,6 @@ jobs:
         # Docker Hub image (also with version) - plin: align with dev and deployment
         image: mysql:8.0
         env:
-          #MYSQL_ROOT_PASSWORD: secret
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_DATABASE: pims
         ## map the "external" 33060 port with the "internal" 3306
@@ -28,16 +37,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-
-    strategy:
-      matrix:
-        operating-system: [ubuntu-latest]
-        php-versions: [ '8.0' ]
-        dependency-stability: [ 'prefer-stable' ]
-        laravel: [ '8.*' ]
-        include:
-          - laravel:  8.*
-            testbench: 6.*
 
     name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.operating-system}}
 
