@@ -1,4 +1,4 @@
-name: [CI/CD] Build, Test and Release Draft
+name: (CI/CD) Build, Test and Release Draft
 on:
   pull_request:
     branches:

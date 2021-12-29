@@ -1,4 +1,4 @@
-name: [PR Pre-Check] Build and Test
+name: (PR Pre-Check) Build and Test
 on:
   pull_request:
     branches:
