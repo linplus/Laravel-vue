@@ -16,8 +16,9 @@ jobs:
         # Docker Hub image (also with version) - plin: align with dev and deployment
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: s3cret
-          MYSQL_DATABASE:  pims
+          #MYSQL_ROOT_PASSWORD: secret
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_DATABASE: pims
         ## map the "external" 33060 port with the "internal" 3306
         ports:
           - 33060:3306
@@ -106,7 +107,7 @@ jobs:
           DB_DATABASE: pims
           DB_PORT: 33060
           DB_USER: root
-          DB_PASSWORD: s3cret
+          DB_PASSWORD:
 
         run: php artisan migrate
 
@@ -123,8 +124,7 @@ jobs:
           DB_CONNECTION: mysql
           DB_DATABASE: pims
           DB_PORT: 33060
-          DB_USER: root
-          DB_PASSWORD: s3cret
+          DB_PASSWORD:
 
         run: vendor/bin/phpunit --testdox
 
