@@ -13,9 +13,19 @@ jobs:
       matrix:
         operating-system: [ ubuntu-latest ]
         php-versions: [ '8.0' ]
+        mysql-version: ['8.0']
+        nodejs-version: ['14.x']
         dependency-stability: [ 'prefer-stable' ]
         laravel: [ '8.*' ]
         testbench: [' 6.*']
+
+
+    env:
+      DB_CONNECTION: mysql
+      DB_DATABASE: pims
+      DB_PORT: 33060
+      DB_USER: root
+      DB_PASSWORD: secret
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -24,13 +34,13 @@ jobs:
       # Label used to access the service container
       mysql:
         # Docker Hub image (also with version) - plin: align with dev and deployment
-        image: mysql:8.0
+        image: mysql:${{ matrix.mysql-version }}
         env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE:  pims
+          MYSQL_ROOT_PASSWORD: ${{env.MYSQL_PASSWORD}}
+          MYSQL_DATABASE: ${{env.MYSQL_DATABASE}}
         ## map the "external" 33060 port with the "internal" 3306
         ports:
-          - 33060:3306
+          - ${{env.DB_PORT}}:3306
         # Set health checks to wait until mysql database has started (it takes some seconds to start)
         options: >-
           --health-cmd="mysqladmin ping"
@@ -45,7 +55,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: ${{ matrix.nodejs-version }}
       - name: Cache node_modules directory
         uses: actions/cache@v2
         id: node_modules-cache
@@ -98,37 +108,19 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Clear all existing caches
         run: php artisan optimize:clear
-
       - name: Run Migrations
-        # Set environment
-        env:
-          DB_CONNECTION: mysql
-          DB_DATABASE: pims
-          DB_PORT: 33060
-          DB_USER: root
-          DB_PASSWORD: secret
-
         run: php artisan migrate
 
       - name: Show dir
         run: pwd
-
       - name: PHP Version
         run: php --version
 
-      # Code quality
+      # Unit Test
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        # Set environment
-        env:
-          DB_CONNECTION: mysql
-          DB_DATABASE: pims
-          DB_PORT: 33060
-          DB_USER: root
-          DB_PASSWORD: secret
-
         run: vendor/bin/phpunit --testdox
 
-
+      # Code quality
 #      - name: Execute Code Sniffer via phpcs
 #        run: |
 #          composer require --dev squizlabs/php_codesniffer
