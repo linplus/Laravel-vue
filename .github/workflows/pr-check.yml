@@ -1,4 +1,4 @@
-name: (PR Pre-Check) Build and Test
+name: (PR pre-check) Build and Test
 on:
   pull_request:
     branches:
@@ -47,7 +47,7 @@ jobs:
       - name: Install NPM packages
         if: steps.node_modules-cache.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Build frontend
+      - name: Frontend development build
         run: npm run dev
 
       # PHP and Composer
