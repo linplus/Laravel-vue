@@ -158,6 +158,7 @@ jobs:
         run: |
           echo "${{env.RELEASE_NAME}} version: ${{github.event.inputs.RELEASE_VERSION}}" > version-info
           echo "${{env.BUILD_TYPE}} build: ${{steps.date.outputs.date}}.${{github.run_number}}" >> version-info
+          echo "${GITHUB_REF##*/} (commit ${GITHUB_SHA::8})" >> version-info
           zip ./release.zip version-info
 
       - name: Create GitHub draft release
