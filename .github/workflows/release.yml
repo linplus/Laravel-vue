@@ -118,8 +118,9 @@ jobs:
 
       # Code quality
       - name: Execute Code Sniffer via phpcs
-        composer require --dev squizlabs/php_codesniffer
-        run: vendor/bin/phpcs -n --standard=phpcs.xml app
+        run: |
+          composer require --dev squizlabs/php_codesniffer
+          vendor/bin/phpcs -n --standard=phpcs.xml app
 
 #      - name: Execute Code Static Analysis (PHP Stan + Larastan)
 #        run: |
