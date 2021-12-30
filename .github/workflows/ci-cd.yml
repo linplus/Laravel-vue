@@ -142,7 +142,7 @@ jobs:
           retention-days: 1
 
   release:
-    name: Create CI Release
+    name: Create Release
     runs-on: ubuntu-latest
     needs: build-test
     steps:
