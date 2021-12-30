@@ -7,7 +7,7 @@ env:
 
   # db
   DB_DATABASE: pims     #use DB_DATABASE from either .env.testing (or .env)
-  DB_USER: root         #mysql default ('ubuntu-latest'), do not change
+  DB_USERNAME: root         #mysql default ('ubuntu-latest'), do not change
   DB_PASSWORD: root     #mysql default ('ubuntu-latest'), do not change
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
 
       # Node.js and NPM
       - name: Setup Node.js
