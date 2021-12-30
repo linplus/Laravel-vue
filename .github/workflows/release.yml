@@ -161,7 +161,7 @@ jobs:
           echo "project: ${{env.RELEASE_NAME}}" > ${{env.VERSION_INFO}}
           echo "version: ${{github.event.inputs.RELEASE_VERSION}}" > ${{env.VERSION_INFO}}
           echo "build: ${{steps.date.outputs.date}}.${{github.run_number}} ${{env.BUILD_TYPE}}" >> ${{env.VERSION_INFO}}
-          echo "${GITHUB_REF##*/} (commit ${GITHUB_SHA::8})" >> ${{env.VERSION_INFO}}
+          echo "branch: ${GITHUB_REF##*/} (commit ${GITHUB_SHA::8})" >> ${{env.VERSION_INFO}}
           zip ./release.zip ${{env.VERSION_INFO}}
 
       - name: Create GitHub release
