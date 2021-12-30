@@ -111,12 +111,15 @@ jobs:
           files: test-results/**/*.xml
 
       # Code quality
-#      - name: Execute Code Sniffer via phpcs
-#        run: |
-#          composer require --dev squizlabs/php_codesniffer
-#          vendor/bin/phpcs --standard=PSR12 app
+      - name: Execute Code Sniffer via phpcs
+        run: |
+          composer require --dev squizlabs/php_codesniffer
+          vendor/bin/phpcs -n --standard=phpcs.xml .
 
-#      - name: Execute Code Static Analysis (PHP Stan + Larastan)
-#        run: |
-#          composer require --dev nunomaduro/larastan
-#          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
+      - name: Execute Code Static Analysis (PHP Stan + Larastan)
+        env:
+          RULE_LEVEL: 1 # basic checks + unknown ...
+          MEMORY_SIZE: 256M
+        run: |
+          composer require --dev nunomaduro/larastan
+          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=${{env.RULE_LEVEL}} --no-progress --memory-limit=${{env.MEMORY_SIZE}}

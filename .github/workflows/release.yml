@@ -122,12 +122,16 @@ jobs:
           composer require --dev squizlabs/php_codesniffer
           vendor/bin/phpcs -n --standard=phpcs.xml .
 
-#      - name: Execute Code Static Analysis (PHP Stan + Larastan)
-#        run: |
-#          composer require --dev nunomaduro/larastan
-#          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
+      - name: Execute Code Static Analysis (PHP Stan + Larastan)
+        env:
+          RULE_LEVEL: 1 # basic checks + unknown ...
+          MEMORY_SIZE: 256M
+        run: |
+          composer require --dev nunomaduro/larastan
+          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=${{env.RULE_LEVEL}} --no-progress --memory-limit=${{env.MEMORY_SIZE}}
 
-      - name: Create release archieve
+      # Create archive file
+      - name: Create release archive
         uses: thedoctor0/zip-release@master
         with:
           filename: release.zip
