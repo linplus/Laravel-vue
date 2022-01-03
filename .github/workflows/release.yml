@@ -115,7 +115,7 @@ jobs:
         with:
           files: phpunit/junit.xml
 
-      - name: Check test coverage
+      - name: Check Test Coverage
         id: test-coverage
         uses: johanvanhelden/gha-clover-test-coverage-check@v1
         with:
