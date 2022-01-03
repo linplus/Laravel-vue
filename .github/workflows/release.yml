@@ -138,31 +138,28 @@ jobs:
           filename: "phpunit/clover.xml"
           exit: false
 
-
-      - name: Get release version
-        id: get_version
-        run: echo ::set-output name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
-
       # Create archive file
       - name: Create release archive
         uses: thedoctor0/zip-release@master
         with:
-          filename: ${{env.RELEASE_FILE}}_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
+          filename: release.zip
           exclusions: '*.git* .editorconfig /*node_modules/* /*storage/* /*phpunit/*'
 
-      - name: Create release report
+      # Create report file
+      - name: Create release archive
         uses: thedoctor0/zip-release@master
         with:
-          filename: release_report.zip
           path: phpunit
+          filename: release-report.zip
+          exclusions: '*.xml'
 
       - name: Upload artifact for release
         uses: actions/upload-artifact@v2
         with:
           name: site-build
           path: |
-            ${{env.RELEASE_FILE}}_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
-            release_report_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
+            release.zip
+            release-report.zip
           retention-days: 1
 
   release:
@@ -189,24 +186,35 @@ jobs:
           echo "branch: ${GITHUB_REF##*/} (commit ${GITHUB_SHA::8})" >> ${{env.VERSION_INFO}}
           zip ./release.zip ${{env.VERSION_INFO}}
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
+      - name: Get release version
+        id: get_version
+        run: echo ::set-output name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
 
-#      - name: Create GitHub release
-#        id: create-new-release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          release_name: ${{env.RELEASE_NAME}} ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
-#          tag_name: ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
-#
-#      - name: Upload asset to GitHub
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-#          asset_path: ./release.zip
-#          asset_name: ${{env.RELEASE_FILE}}_${{github.event.inputs.RELEASE_VERSION}}.zip
-#          asset_content_type: application/zip
+      - name: Create GitHub release
+        id: create-new-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_name: ${{env.RELEASE_NAME}} ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
+          tag_name: ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
+
+      - name: Upload release asset to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
+          asset_path: ./release.zip
+          asset_name: ${{env.RELEASE_FILE}}_${{github.event.inputs.RELEASE_VERSION}}.zip
+          asset_content_type: application/zip
+
+      - name: Upload report asset to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
+          asset_path: ./release-report.zip
+          asset_name: release_report_${{github.event.inputs.RELEASE_VERSION}}.zip
+          asset_content_type: application/zip
