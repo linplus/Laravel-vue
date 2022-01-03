@@ -109,7 +109,6 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
 
-      - run: cat test-results/phpunit.xml
       - name: Publish PHPUnit Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
