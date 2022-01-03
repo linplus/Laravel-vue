@@ -107,14 +107,14 @@ jobs:
 
       # Unit Test
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit --log-junit test-results/phpunit.xml
+        run: vendor/bin/phpunit
 
       - run: cat test-results/phpunit.xml
       - name: Publish PHPUnit Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          files: test-results/**/*.xml
+          files: phpunit/**/*.xml
 
       # Code quality
       - name: Execute Code Sniffer via phpcs
@@ -138,22 +138,31 @@ jobs:
           filename: "phpunit/clover.xml"
           exit: false
 
-      - name: Test coverage report
-        if: steps.test-coverage.outputs.coverage > 50
-        run: echo "We are more than halfway there!"
+
+      - name: Get release version
+        id: get_version
+        run: echo ::set-output name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
 
       # Create archive file
       - name: Create release archive
         uses: thedoctor0/zip-release@master
         with:
-          filename: release.zip
-          exclusions: '*.git* .editorconfig /*node_modules/* /*storage/*'
+          filename: ${{env.RELEASE_FILE}}_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
+          exclusions: '*.git* .editorconfig /*node_modules/* /*storage/* /*phpunit/*'
+
+      - name: Create release report
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: release_report.zip
+          path: phpunit
 
       - name: Upload artifact for release
         uses: actions/upload-artifact@v2
         with:
           name: site-build
-          path: release.zip
+          path: |
+            ${{env.RELEASE_FILE}}_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
+            release_report_${{ steps.get_version.outputs.RELEASE_VERSION }}.zip
           retention-days: 1
 
   release:
@@ -181,20 +190,23 @@ jobs:
           zip ./release.zip ${{env.VERSION_INFO}}
 
       - name: Create GitHub release
-        id: create-new-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_name: ${{env.RELEASE_NAME}} ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
-          tag_name: ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
+        uses: softprops/action-gh-release@v1
 
-      - name: Upload asset to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-          asset_path: ./release.zip
-          asset_name: ${{env.RELEASE_FILE}}_${{github.event.inputs.RELEASE_VERSION}}.zip
-          asset_content_type: application/zip
+#      - name: Create GitHub release
+#        id: create-new-release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          release_name: ${{env.RELEASE_NAME}} ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
+#          tag_name: ${{github.event.inputs.RELEASE_VERSION}}_${{ github.run_number }}
+#
+#      - name: Upload asset to GitHub
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
+#          asset_path: ./release.zip
+#          asset_name: ${{env.RELEASE_FILE}}_${{github.event.inputs.RELEASE_VERSION}}.zip
+#          asset_content_type: application/zip

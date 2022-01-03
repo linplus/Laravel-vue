@@ -33,6 +33,6 @@
     </php>
     <logging>
         <junit outputFile="phpunit/junit.xml"/>
-        <testdoxHtml outputFile="phpunit/testdox.html"/>
+        <testdoxHtml outputFile="phpunit/html-test.html"/>
     </logging>
 </phpunit>
