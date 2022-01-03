@@ -150,7 +150,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           path: phpunit
-          filename: test-report.zip
+          filename: test_result.zip
 
       - name: Upload artifact for release
         uses: actions/upload-artifact@v2
@@ -158,7 +158,7 @@ jobs:
           name: site-build
           path: |
             release.zip
-            release-report.zip
+            test_result.zip
           retention-days: 1
 
   release:
@@ -214,6 +214,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-          asset_path: test-report.zip
-          asset_name: test-report.zip
+          asset_path: test_result.zip
+          asset_name: test_result.zip
           asset_content_type: application/zip
