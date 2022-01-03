@@ -113,7 +113,15 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          files: phpunit/**/*.xml
+          files: phpunit/junit.xml
+
+      - name: Check test coverage
+        id: test-coverage
+        uses: johanvanhelden/gha-clover-test-coverage-check@v1
+        with:
+          percentage: "50"
+          filename: "phpunit/clover.xml"
+          exit: false
 
       # Code quality
       - name: Execute Code Sniffer via phpcs
@@ -129,13 +137,6 @@ jobs:
           composer require --dev nunomaduro/larastan
           vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=${{env.RULE_LEVEL}} --no-progress --memory-limit=${{env.MEMORY_SIZE}}
 
-      - name: Check test coverage
-        id: test-coverage
-        uses: johanvanhelden/gha-clover-test-coverage-check@v1
-        with:
-          percentage: "50"
-          filename: "phpunit/clover.xml"
-          exit: false
 
       # Create archive file
       - name: Create release archive
@@ -149,8 +150,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           path: phpunit
-          filename: release-report.zip
-          exclusions: '*.xml'
+          filename: test-report.zip
 
       - name: Upload artifact for release
         uses: actions/upload-artifact@v2
@@ -214,6 +214,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-          asset_path: ./release-report.zip
-          asset_name: release_report_${{github.event.inputs.RELEASE_VERSION}}.zip
+          asset_path: ./test-report.zip
           asset_content_type: application/zip
