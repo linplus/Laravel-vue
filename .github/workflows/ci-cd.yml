@@ -131,6 +131,18 @@ jobs:
           composer require --dev nunomaduro/larastan
           vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=${{env.RULE_LEVEL}} --no-progress --memory-limit=${{env.MEMORY_SIZE}}
 
+      - name: Check test coverage
+        id: test-coverage
+        uses: johanvanhelden/gha-clover-test-coverage-check@v1
+        with:
+          percentage: "50"
+          filename: "phpunit/clover.xml"
+          exit: false
+
+      - name: Test coverage report
+        if: steps.test-coverage.outputs.coverage > 50
+        run: echo "We are more than halfway there!"
+
       # Create archive file
       - name: Create release archive
         uses: thedoctor0/zip-release@master
