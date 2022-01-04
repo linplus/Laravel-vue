@@ -83,8 +83,8 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Clear Laravel caches
         run: php artisan optimize:clear
-      - name: Run Migrations
-        run: php artisan migrate
+#      - name: Run Migrations
+#        run: php artisan migrate
 
       # Create archive file
       - name: Create release archive
