@@ -113,14 +113,14 @@ jobs:
 #        uses: mikepenz/action-junit-report@v2
 #        if: always() # always run even if the previous step fails
 #        with:
-#          report_paths: 'phpunit/junit.xml'
+#          report_paths: '**/phpunit/junit.xml'
 
       - name: Test Report
         uses: dorny/test-reporter@v1
         if:  always()    # run this step even if previous step failed
         with:
           name: Test Report          # Name of the check run which will be created
-          path:  'phpunit/junit.xml'    # Path to test results
+          path:  '**/phpunit/*unit.xml'    # Path to test results
           reporter: java-junit        # Format of test results
 
       - name: Check Test Coverage
