@@ -109,11 +109,13 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
 
-      - name: Publish PHPUnit Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if:  always()    # run this step even if previous step failed
         with:
-          files: phpunit/junit.xml
+          name: Test Report          # Name of the check run which will be created
+          path: phpunit/junit.xml    # Path to test results
+          reporter: java-junit        # Format of test results
 
       - name: Check Test Coverage
         id: test-coverage
