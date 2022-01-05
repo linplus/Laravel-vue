@@ -119,7 +119,9 @@ jobs:
 
       - name: Output Test Results on failure
         if: steps.run_test.outputs.status == 'failure'
-        run: echo "$(cat phpunit/junit.xml)"
+        run: |
+          echo "$(cat phpunit/junit.xml)"
+          echo "$(cat phpunit/html-test.html)"
 
       - name: Check Test Coverage
         id: test-coverage
