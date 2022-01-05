@@ -107,6 +107,7 @@ jobs:
 
       # Unit Test
       - name: Execute tests (Unit and Feature tests) via PHPUnit
+        id: run_test
         run: vendor/bin/phpunit
 
       - name: Create Test Report
@@ -115,6 +116,10 @@ jobs:
         with:
           check_name: Test Result
           report_paths: 'phpunit/junit.xml'
+
+      - name: Output Test Results on failure
+        if: steps.run_test.outputs.status == 'failure'
+        run: echo "$(cat phpunit/junit.xml)"
 
       - name: Check Test Coverage
         id: test-coverage
