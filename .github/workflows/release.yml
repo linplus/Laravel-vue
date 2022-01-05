@@ -109,17 +109,16 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
 
-      - name: Test Report (mikepenz)
-        uses: mikepenz/action-junit-report@v2
-        if: always() # always run even if the previous step fails
-        with:
-          report_paths: '**/phpunit/junit.xml'
+#      - name: Test Report (mikepenz)
+#        uses: mikepenz/action-junit-report@v2
+#        if: always() # always run even if the previous step fails
+#        with:
+#          report_paths: '**/phpunit/junit.xml'
 
       - name: Test Report (dorny)
         uses: dorny/test-reporter@v1
         if:  always()    # run this step even if previous step failed
         with:
-          name: Test Report          # Name of the check run which will be created
           path:  '**/phpunit/junit.xml'    # Path to test results
           reporter: java-junit        # Format of test results
 
