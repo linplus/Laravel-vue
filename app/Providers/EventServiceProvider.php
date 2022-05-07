@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogHttpRequestListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Http\Client\Events\ConnectionFailed;
+use Illuminate\Http\Client\Events\RequestSending;
+use Illuminate\Http\Client\Events\ResponseReceived;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        RequestSending::class => [ LogHttpRequestListener::class ],
+        ResponseReceived::class => [ LogHttpRequestListener::class ],
+        ConnectionFailed::class => [ LogHttpRequestListener::class ],
     ];
 
     /**
